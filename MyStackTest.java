@@ -1,57 +1,68 @@
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Random;
-import java.util.Stack;
 
 public class MyStackTest {
     private static final int TEST_SIZE = 1000000;
 
     public static void main(String[] args) throws IOException {
         MyStack<Integer> myStack = new MyStack<>();
-        Stack<Integer> javaStack = new Stack<>();
+        java.util.Stack<Integer> javaStack = new java.util.Stack<>();
         Random random = new Random();
 
-        // Measure time for MyStack and Java Stack
-        long myStackTime = testStack(myStack, random);
-        long javaStackTime = testStack(javaStack, random);
+        // Measure execution time of MyStack and Java Stack
+        long myStackTime = testStackPerformance(myStack, random);
+        long javaStackTime = testStackPerformance(javaStack, random);
 
-        // Print results
-        System.out.println("MyStack time: " + myStackTime + " ns");
-        System.out.println("Java Stack time: " + javaStackTime + " ns");
+        // Print results to console
+        System.out.println("MyStack execution time: " + myStackTime + " ns");
+        System.out.println("Java Stack execution time: " + javaStackTime + " ns");
 
-        // Save results to CSV
-        saveResults(myStackTime, javaStackTime);
+        // Export results to a CSV file for further analysis
+        exportResultsToCSV(myStackTime, javaStackTime);
     }
 
-    private static long testStack(MyStack<Integer> stack, Random random) {
-        long start = System.nanoTime();
+    //Tests the performance of Java's built-in Stack implementation.
+    private static long testStackPerformance(java.util.Stack<Integer> stack, Random random) {
+        long startTime = System.nanoTime();
+
         for (int i = 0; i < TEST_SIZE; i++) {
             stack.push(i);
             if (!stack.isEmpty() && random.nextBoolean()) {
                 stack.pop();
             }
         }
-        return System.nanoTime() - start;
+        return System.nanoTime() - startTime;
     }
 
-    private static long testStack(Stack<Integer> stack, Random random) {
-        long start = System.nanoTime();
+    //Tests the performance of the custom MyStack implementation.
+    private static long testStackPerformance(MyStack<Integer> stack, Random random) {
+        long startTime = System.nanoTime();
+
         for (int i = 0; i < TEST_SIZE; i++) {
             stack.push(i);
             if (!stack.isEmpty() && random.nextBoolean()) {
                 stack.pop();
             }
         }
-        return System.nanoTime() - start;
+        return System.nanoTime() - startTime;
     }
 
-    private static void saveResults(long myStackTime, long javaStackTime) throws IOException {
-        String file = "StackPerformance.csv";
-        try (FileWriter writer = new FileWriter(file)) {
-            writer.append("Stack Type,Time (ns)\n");
-            writer.append("MyStack," + myStackTime + "\n");
-            writer.append("Java Stack," + javaStackTime + "\n");
-            System.out.println("Results saved to " + file);
+    //Exports the performance test results to a CSV file for further analysis.
+    private static void exportResultsToCSV(long myStackTime, long javaStackTime) throws IOException {
+        String filePath = "StackPerformance.csv";
+
+        try (FileWriter writer = new FileWriter(filePath)) {
+            // write CSV head
+            writer.append("Stack Type,Execution Time (ns)\n");
+
+            // MyStack result
+            writer.append("MyStack,").append(String.valueOf(myStackTime)).append("\n");
+
+            // Java Stack result
+            writer.append("Java Stack,").append(String.valueOf(javaStackTime)).append("\n");
+
+            System.out.println("Results exported to " + filePath);
         }
     }
 }
