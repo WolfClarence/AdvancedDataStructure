@@ -77,19 +77,17 @@ public class MyDequeTest {
      * @param myDequeTime Execution time of MyDeque.
      * @param arrayDequeTime Execution time of ArrayDeque.
      */
-
-
     private static void exportResultsToCSV(long myDequeTime, long arrayDequeTime) throws IOException {
         String filePath = "DequePerformance.csv";
 
         try (FileWriter writer = new FileWriter(filePath)) {
-            // 写入 CSV 头部
+            // write CSV head
             writer.append("Deque Type,Execution Time (ns)\n");
 
-            // 写入 MyDeque 结果
+            // MyDeque result
             writer.append("MyDeque,").append(String.valueOf(myDequeTime)).append("\n");
 
-            // 写入 ArrayDeque 结果
+            // ArrayDeque result
             writer.append("ArrayDeque,").append(String.valueOf(arrayDequeTime)).append("\n");
 
             System.out.println("Results exported to " + filePath);
