@@ -12,47 +12,60 @@ public class MyQueueTest {
         Queue<Integer> javaQueue = new LinkedList<>();
         Random random = new Random();
 
-        // Measure execution time
-        long myQueueTime = testQueue(myQueue, random);
-        long javaQueueTime = testQueue(javaQueue, random);
+        // Measure execution time of MyQueue and Java Queue
+        long myQueueTime = testQueuePerformance(myQueue, random);
+        long javaQueueTime = testQueuePerformance(javaQueue, random);
 
-        // Print results
-        System.out.println("MyQueue time: " + myQueueTime + " ns");
-        System.out.println("Java Queue time: " + javaQueueTime + " ns");
+        // Print results to console
+        System.out.println("MyQueue execution time: " + myQueueTime + " ns");
+        System.out.println("Java Queue execution time: " + javaQueueTime + " ns");
 
-        // Save results to CSV
-        saveResults(myQueueTime, javaQueueTime);
+        // Export results to a CSV file for further analysis
+        exportResultsToCSV(myQueueTime, javaQueueTime);
     }
 
-    private static long testQueue(MyQueue<Integer> queue, Random random) {
-        long start = System.nanoTime();
+    // Tests the performance of Java's built-in Queue implementation.
+
+    private static long testQueuePerformance(Queue<Integer> queue, Random random) {
+        long startTime = System.nanoTime();
+
         for (int i = 0; i < TEST_SIZE; i++) {
-            queue.enqueue(i);
+            queue.offer(i); // Enqueue operation
             if (!queue.isEmpty() && random.nextBoolean()) {
-                queue.dequeue();
+                queue.poll(); // Dequeue operation
             }
         }
-        return System.nanoTime() - start;
+        return System.nanoTime() - startTime;
     }
 
-    private static long testQueue(Queue<Integer> queue, Random random) {
-        long start = System.nanoTime();
+    // Tests the performance of the custom MyQueue implementation.
+    private static long testQueuePerformance(MyQueue<Integer> queue, Random random) {
+        long startTime = System.nanoTime();
+
         for (int i = 0; i < TEST_SIZE; i++) {
-            queue.offer(i);
+            queue.enqueue(i); // Enqueue operation
             if (!queue.isEmpty() && random.nextBoolean()) {
-                queue.poll();
+                queue.dequeue(); // Dequeue operation
             }
         }
-        return System.nanoTime() - start;
+        return System.nanoTime() - startTime;
     }
 
-    private static void saveResults(long myQueueTime, long javaQueueTime) throws IOException {
-        String file = "QueuePerformance.csv";
-        try (FileWriter writer = new FileWriter(file)) {
-            writer.append("Queue Type,Time (ns)\n");
-            writer.append("MyQueue," + myQueueTime + "\n");
-            writer.append("Java Queue," + javaQueueTime + "\n");
-            System.out.println("Results saved to " + file);
+    // Exports the performance test results to a CSV file for further analysis.
+    private static void exportResultsToCSV(long myQueueTime, long javaQueueTime) throws IOException {
+        String filePath = "QueuePerformance.csv";
+
+        try (FileWriter writer = new FileWriter(filePath)) {
+            // Write CSV head
+            writer.append("Queue Type,Execution Time (ns)\n");
+
+            // MyQueue result
+            writer.append("MyQueue,").append(String.valueOf(myQueueTime)).append("\n");
+
+            // Java Queue result
+            writer.append("Java Queue,").append(String.valueOf(javaQueueTime)).append("\n");
+
+            System.out.println("Results exported to " + filePath);
         }
     }
 }

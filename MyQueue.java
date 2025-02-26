@@ -1,52 +1,80 @@
-import java.util.LinkedList;
-import java.util.Queue;
-
 public class MyQueue<T> {
-    private LinkedList<T> queue;
+    private Node<T> front;
+    private Node<T> rear;
+    private int size;
+
+    private static class Node<T> {
+        T data;
+        Node<T> next;
+
+        Node(T data) {
+            this.data = data;
+            this.next = null;
+        }
+    }
 
     public MyQueue() {
-        this.queue = new LinkedList<>();
+        this.front = this.rear = null;
+        this.size = 0;
     }
 
     //Enqueue an element to the queue (add to the end)
     public void enqueue(T data) {
-        queue.addLast(data);
+        Node<T> newNode = new Node<>(data);
+        if (rear == null) {
+            front = rear = newNode;
+        } else {
+            rear.next = newNode;
+            rear = newNode;
+        }
+        size++;
     }
 
     //Dequeue an element from the queue (remove from the front)
     public T dequeue() {
-        if (queue.isEmpty()) {
+        if (isEmpty()) {
             throw new IllegalStateException("Queue is empty");
         }
-        return queue.removeFirst();
+        T data = front.data;
+        front = front.next;
+        if (front == null) {
+            rear = null;
+        }
+        size--;
+        return data;
     }
 
     //Peek the front element without removing it
     public T peek() {
-        if (queue.isEmpty()) {
+        if (isEmpty()) {
             throw new IllegalStateException("Queue is empty");
         }
-        return queue.getFirst();
+        return front.data;
     }
 
     //Get the size of the queue
     public int size() {
-        return queue.size();
+        return size;
     }
 
     //Check if the queue is empty
     public boolean isEmpty() {
-        return queue.isEmpty();
+        return front == null;
     }
 
-    //Clear the queue
+    // Clear the queue
     public void clear() {
-        queue.clear();
+        front = rear = null;
+        size = 0;
     }
 
-    //Print the queue
+    // Print the queue
     public void printQueue() {
-        System.out.println(queue);
+        Node<T> current = front;
+        while (current != null) {
+            System.out.print(current.data + " -> ");
+            current = current.next;
+        }
+        System.out.println("null");
     }
 }
-
