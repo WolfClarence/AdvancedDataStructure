@@ -1,6 +1,4 @@
-import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayDeque;
 import java.util.Random;
@@ -24,7 +22,7 @@ public class MyDequeTest {
         System.out.println("ArrayDeque execution time: " + arrayDequeTime + " ns");
 
         // Export results to an Excel file for further analysis
-        exportResultsToExcel(myDequeTime, arrayDequeTime);
+        exportResultsToCSV(myDequeTime, arrayDequeTime);
     }
 
     /**
@@ -79,29 +77,23 @@ public class MyDequeTest {
      * @param myDequeTime Execution time of MyDeque.
      * @param arrayDequeTime Execution time of ArrayDeque.
      */
-    private static void exportResultsToExcel(long myDequeTime, long arrayDequeTime) throws IOException {
-        Workbook workbook = new XSSFWorkbook();
-        Sheet sheet = workbook.createSheet("Performance Results");
 
-        // Create header row
-        Row headerRow = sheet.createRow(0);
-        headerRow.createCell(0).setCellValue("Deque Type");
-        headerRow.createCell(1).setCellValue("Execution Time (ns)");
 
-        // Insert MyDeque results
-        Row myDequeRow = sheet.createRow(1);
-        myDequeRow.createCell(0).setCellValue("MyDeque");
-        myDequeRow.createCell(1).setCellValue(myDequeTime);
+    private static void exportResultsToCSV(long myDequeTime, long arrayDequeTime) throws IOException {
+        String filePath = "DequePerformance.csv";
 
-        // Insert ArrayDeque results
-        Row arrayDequeRow = sheet.createRow(2);
-        arrayDequeRow.createCell(0).setCellValue("ArrayDeque");
-        arrayDequeRow.createCell(1).setCellValue(arrayDequeTime);
+        try (FileWriter writer = new FileWriter(filePath)) {
+            // 写入 CSV 头部
+            writer.append("Deque Type,Execution Time (ns)\n");
 
-        // Save the Excel file
-        try (FileOutputStream fileOut = new FileOutputStream("DequePerformance.xlsx")) {
-            workbook.write(fileOut);
+            // 写入 MyDeque 结果
+            writer.append("MyDeque,").append(String.valueOf(myDequeTime)).append("\n");
+
+            // 写入 ArrayDeque 结果
+            writer.append("ArrayDeque,").append(String.valueOf(arrayDequeTime)).append("\n");
+
+            System.out.println("Results exported to " + filePath);
         }
-        workbook.close();
     }
+
 }
