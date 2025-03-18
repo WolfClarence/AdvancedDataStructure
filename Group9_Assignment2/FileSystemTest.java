@@ -1,7 +1,7 @@
 import java.io.IOException;
 
 // Test class to verify the functionality of the file system.
-// TestFileSystem.java
+// FileSystemTest.java
 // A simple test class to verify the FileSystem
 public class FileSystemTest {
     public static String filename="files.csv";
